@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Clipboard Smiley",
+  "version": "1.0.0",
+  "description": "A playful persistent clipboard manager with drag-and-drop capture.",
+  "permissions": ["storage", "clipboardWrite", "clipboardRead", "activeTab"],
+  "action": {
+    "default_title": "Toggle Clipboard Smiley"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icon.svg",
+    "48": "icon.svg",
+    "128": "icon.svg"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
