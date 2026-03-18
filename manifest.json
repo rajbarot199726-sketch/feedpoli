@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Clipboard Smiley",
+  "version": "1.0.0",
+  "description": "A playful persistent clipboard manager with drag-and-drop capture.",
+  "permissions": ["storage", "clipboardWrite", "clipboardRead"],
+  "action": {
+    "default_title": "Clipboard Smiley",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icon.svg",
+    "48": "icon.svg",
+    "128": "icon.svg"
+  }
+}

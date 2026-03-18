@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clipboard Smiley</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="floating-modal" id="clipboard-modal" aria-live="polite">
+        <header class="modal-header" id="modal-header">
+          <div>
+            <p class="eyebrow">Clipboard buddy</p>
+            <h1>Clipboard Smiley</h1>
+          </div>
+          <button id="close-button" class="icon-button" type="button" aria-label="Close clipboard smiley panel">
+            ×
+          </button>
+        </header>
+
+        <button id="reopen-button" class="reopen-button hidden" type="button">
+          Reopen Clipboard Smiley
+        </button>
+
+        <div id="modal-content" class="modal-content">
+          <p class="helper-text">Drag highlighted text onto the smiley face to save it forever.</p>
+
+          <div
+            id="drop-zone"
+            class="drop-zone"
+            tabindex="0"
+            role="button"
+            aria-label="Drop text on the smiley face to save it"
+          >
+            <svg id="smiley-face" class="smiley-face" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="52" class="face-outline" />
+              <circle cx="42" cy="46" r="6" class="face-eye" />
+              <circle cx="78" cy="46" r="6" class="face-eye" />
+              <path id="smile-mouth" class="face-mouth" d="M35 72 Q60 94 85 72" />
+            </svg>
+            <p id="drop-message" class="drop-message">Feed me text</p>
+          </div>
+
+          <section class="saved-list-section">
+            <div class="list-header">
+              <h2>Saved snippets</h2>
+              <button id="clear-button" class="secondary-button" type="button">Clear all</button>
+            </div>
+            <p id="status-message" class="status-message">Nothing saved yet.</p>
+            <ul id="clipboard-list" class="clipboard-list"></ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
