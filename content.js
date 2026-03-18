@@ -1,7 +1,9 @@
 const ROOT_ID = 'clipboard-smiley-root';
 const STORAGE_KEY = 'clipboard_items';
-const MODAL_STATE_KEY = 'clipboard_modal_closed';
+const PANEL_ENABLED_KEY = 'clipboard_modal_enabled';
 const MODAL_POSITION_KEY = 'clipboard_modal_position';
+const SMILE_PATH = 'M35 72 Q60 94 85 72';
+const EAT_PATH = 'M60 69 m -10,0 a 10,10 0 1,0 20,0 a 10,10 0 1,0 -20,0';
 
 const browserStorage = {
   async get(keys) {
@@ -14,7 +16,7 @@ const browserStorage = {
 
 const state = {
   items: [],
-  closed: false,
+  enabled: true,
   dragCounter: 0,
   position: { x: 24, y: 24 },
   mounted: false,
@@ -37,8 +39,6 @@ function createPanel() {
         </div>
         <button class="clipboard-smiley-icon-button" data-close type="button" aria-label="Close clipboard smiley panel">×</button>
       </header>
-
-      <button class="clipboard-smiley-reopen hidden" data-reopen type="button">Reopen Clipboard Smiley</button>
 
       <div class="clipboard-smiley-content">
         <p class="clipboard-smiley-helper">Drag highlighted text onto the smiley face to save it forever.</p>
@@ -82,7 +82,6 @@ function cacheElements(root) {
     status: root.querySelector('[data-status]'),
     list: root.querySelector('[data-list]'),
     closeButton: root.querySelector('[data-close]'),
-    reopenButton: root.querySelector('[data-reopen]'),
     clearButton: root.querySelector('[data-clear]')
   };
 }
@@ -106,9 +105,9 @@ function formatTimestamp(timestamp) {
 }
 
 async function loadState() {
-  const stored = await browserStorage.get([STORAGE_KEY, MODAL_STATE_KEY, MODAL_POSITION_KEY]);
+  const stored = await browserStorage.get([STORAGE_KEY, PANEL_ENABLED_KEY, MODAL_POSITION_KEY]);
   state.items = Array.isArray(stored[STORAGE_KEY]) ? stored[STORAGE_KEY] : [];
-  state.closed = stored[MODAL_STATE_KEY] === true;
+  state.enabled = stored[PANEL_ENABLED_KEY] !== false;
 
   if (
     stored[MODAL_POSITION_KEY] &&
@@ -122,7 +121,7 @@ async function loadState() {
 async function persistState() {
   await browserStorage.set({
     [STORAGE_KEY]: state.items,
-    [MODAL_STATE_KEY]: state.closed,
+    [PANEL_ENABLED_KEY]: state.enabled,
     [MODAL_POSITION_KEY]: state.position
   });
 }
@@ -139,14 +138,12 @@ function updateStatus(message, tone = 'default') {
 function animateSmiley(isEating) {
   state.elements.smiley.classList.toggle('eating', isEating);
   state.elements.dropZone.classList.toggle('active', isEating);
-  state.elements.mouth.setAttribute('d', isEating ? 'M36 69 Q60 108 84 69' : 'M35 72 Q60 94 85 72');
+  state.elements.mouth.setAttribute('d', isEating ? EAT_PATH : SMILE_PATH);
   state.elements.dropMessage.textContent = isEating ? 'Nom nom nom…' : 'Feed me text';
 }
 
 function setModalVisibility() {
-  state.elements.modal.classList.toggle('closed', state.closed);
-  state.elements.content.classList.toggle('hidden', state.closed);
-  state.elements.reopenButton.classList.toggle('hidden', !state.closed);
+  state.elements.root.classList.toggle('hidden', !state.enabled);
 }
 
 async function copyToClipboard(text) {
@@ -292,27 +289,22 @@ function bindButtons() {
   state.elements.clearButton.addEventListener('click', clearAll);
 
   state.elements.closeButton.addEventListener('click', async () => {
-    state.closed = true;
-    setModalVisibility();
-    await persistState();
-  });
-
-  state.elements.reopenButton.addEventListener('click', async () => {
-    state.closed = false;
+    state.enabled = false;
     setModalVisibility();
     await persistState();
   });
 }
 
-function bindMessages() {
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message?.type !== 'clipboard-smiley/toggle') {
+function bindStorageSync() {
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== 'local') {
       return;
     }
 
-    state.closed = !state.closed;
-    setModalVisibility();
-    persistState();
+    if (changes[PANEL_ENABLED_KEY]) {
+      state.enabled = changes[PANEL_ENABLED_KEY].newValue !== false;
+      setModalVisibility();
+    }
   });
 }
 
@@ -330,7 +322,7 @@ async function initialize() {
   bindDropZone();
   bindDragging();
   bindButtons();
-  bindMessages();
+  bindStorageSync();
   state.mounted = true;
 }
 

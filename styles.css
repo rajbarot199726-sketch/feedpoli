@@ -48,10 +48,6 @@
   box-shadow: 0 22px 55px rgba(15, 23, 42, 0.22);
 }
 
-#clipboard-smiley-root .clipboard-smiley-modal.closed {
-  min-height: auto;
-}
-
 #clipboard-smiley-root .clipboard-smiley-header {
   display: flex;
   align-items: center;
@@ -84,8 +80,7 @@
 }
 
 #clipboard-smiley-root .clipboard-smiley-icon-button,
-#clipboard-smiley-root .clipboard-smiley-secondary-button,
-#clipboard-smiley-root .clipboard-smiley-reopen {
+#clipboard-smiley-root .clipboard-smiley-secondary-button {
   border: 0;
   border-radius: 999px;
   transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
@@ -102,7 +97,6 @@
 
 #clipboard-smiley-root .clipboard-smiley-icon-button:hover,
 #clipboard-smiley-root .clipboard-smiley-secondary-button:hover,
-#clipboard-smiley-root .clipboard-smiley-reopen:hover,
 #clipboard-smiley-root .clipboard-smiley-item:hover {
   transform: translateY(-1px);
 }
@@ -198,8 +192,7 @@
   font-size: 14px;
 }
 
-#clipboard-smiley-root .clipboard-smiley-secondary-button,
-#clipboard-smiley-root .clipboard-smiley-reopen {
+#clipboard-smiley-root .clipboard-smiley-secondary-button {
   padding: 8px 12px;
   background: var(--clipboard-smiley-accent-soft);
   color: var(--clipboard-smiley-accent);
@@ -230,8 +223,7 @@
 #clipboard-smiley-root .clipboard-smiley-item:focus,
 #clipboard-smiley-root .clipboard-smiley-drop-zone:focus-visible,
 #clipboard-smiley-root .clipboard-smiley-icon-button:focus-visible,
-#clipboard-smiley-root .clipboard-smiley-secondary-button:focus-visible,
-#clipboard-smiley-root .clipboard-smiley-reopen:focus-visible {
+#clipboard-smiley-root .clipboard-smiley-secondary-button:focus-visible {
   outline: 2px solid rgba(37, 99, 235, 0.45);
   outline-offset: 2px;
 }

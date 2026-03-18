@@ -1,11 +1,14 @@
-chrome.action.onClicked.addListener(async (tab) => {
-  if (!tab.id) {
-    return;
-  }
+const PANEL_ENABLED_KEY = 'clipboard_modal_enabled';
 
+chrome.action.onClicked.addListener(async () => {
   try {
-    await chrome.tabs.sendMessage(tab.id, { type: 'clipboard-smiley/toggle' });
+    const stored = await chrome.storage.local.get(PANEL_ENABLED_KEY);
+    const currentlyEnabled = stored[PANEL_ENABLED_KEY] !== false;
+
+    await chrome.storage.local.set({
+      [PANEL_ENABLED_KEY]: !currentlyEnabled
+    });
   } catch (error) {
-    console.error('Unable to toggle Clipboard Smiley on this tab.', error);
+    console.error('Unable to toggle Clipboard Smiley.', error);
   }
 });
